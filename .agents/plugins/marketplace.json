@@ -1,0 +1,20 @@
+{
+  "name": "pink-glass-community",
+  "interface": {
+    "displayName": "Pink Glass Community"
+  },
+  "plugins": [
+    {
+      "name": "pink-glass",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pink-glass"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

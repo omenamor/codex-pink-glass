@@ -1,43 +1,86 @@
 # Pink Glass ♡
 
-Неофициальная тема для Codex на Windows: сакура, розовое стекло и пиксельные логотипы Codex / ChatGPT.
+**Пять настраиваемых тем для Codex на Windows:** Sakura, Lavender, Moonlight, Peach и Mint.
 
-## До и после
+Неофициальное оформление с эффектом стекла, фонами и редактором цветов. Плагин помогает устанавливать, включать, отключать и настраивать тему прямо из задачи Codex. Windows x64; Node.js включён в комплект.
 
-Настоящие скриншоты приложения. Личные названия, переписка и черновик сообщения закрыты плашками; остальное изображение сохранено без перерисовки. «До» — оформление с выключенным Pink Glass в том же профиле, а не заводские настройки Codex. Питомец виден на скриншотах, но устанавливается отдельно и в тему не входит.
+**[Скачать плагин для Windows](https://github.com/omenamor/codex-pink-glass/releases/download/v0.10.14-plugin.1/PinkGlass-Plugin-0.10.14.zip)** · [Все выпуски](https://github.com/omenamor/codex-pink-glass/releases) · [Сообщить об ошибке](https://github.com/omenamor/codex-pink-glass/issues)
 
-### Чат
+## Установка из каталога плагинов
+
+В терминале с установленным Codex CLI выполните:
+
+```powershell
+codex plugin marketplace add omenamor/codex-pink-glass
+codex plugin add pink-glass@pink-glass-community
+```
+
+Затем откройте **новую задачу** в Codex и напишите:
+
+> Используй Pink Glass: установи и включи оформление.
+
+Установщик проверит файлы и создаст на рабочем столе ярлык **Codex Pink Glass**. Если Codex открыт без подключения темы, завершите активные задачи, полностью закройте приложение и запустите этот ярлык. Плагин не закрывает Codex принудительно.
+
+## Установка из архива
+
+1. Скачайте архив по ссылке выше и полностью распакуйте его в постоянную папку.
+2. Откройте эту папку как проект в Codex.
+3. Напишите: **«Установи локальный плагин Pink Glass из этой папки, затем включи оформление»**.
+
+В архиве находятся каталог `.agents/plugins/marketplace.json` и сам плагин `plugins/pink-glass`. Если устанавливаете вручную через терминал из распакованной папки:
+
+```powershell
+codex plugin marketplace add .
+codex plugin add pink-glass@pink-glass-community
+```
+
+После установки откройте новую задачу и попросите включить Pink Glass. Не запускайте `.vbs` прямо внутри ZIP.
+
+## Темы и управление
+
+| Тема | Характер |
+| --- | --- |
+| Sakura | Розовое оформление |
+| Lavender | Лавандовое оформление |
+| Moonlight | Ночная тема |
+| Peach | Персиковое оформление |
+| Mint | Мятное оформление |
+
+Примеры запросов:
+
+- «Включи тему Moonlight в Pink Glass».
+- «Открой настройки Pink Glass» — цвета, прозрачность, фон и размеры.
+- «Проверь, включён ли Pink Glass».
+- «Отключи Pink Glass».
+
+Настройки профилей сохраняются. Обновление плагина не сбрасывает цвета и не перезаписывает файлы работающего оформления. Если прежняя версия ещё включена, завершите задачи и при следующем обычном запуске используйте обновлённый ярлык.
+
+## Исправление запуска в 0.10.14 plugin.1
+
+В Codex из Microsoft Store Windows может перенаправлять папки AppData. Раньше из-за этого появлялись ошибки «Location is not available» или «Can not find script file». Установщик теперь определяет фактическое расположение файлов и создаёт ярлык с корректным путём. Повторная установка проверена.
+
+## Пример оформления
+
+Исторические скриншоты Sakura из версии 0.8.11. Текущая версия добавляет ещё четыре темы. Личные названия и переписка скрыты плашками. Питомец устанавливается отдельно и в Pink Glass не входит.
 
 | До | После |
 | --- | --- |
-| ![Чат до](before-chat.png) | ![Чат после](after-chat.png) |
+| ![До Pink Glass](before-home.png) | ![Sakura](after-home.png) |
 
-### Новый чат
+## Как это работает
 
-| До | После |
-| --- | --- |
-| ![Новый чат до](before-home.png) | ![Новый чат после](after-home.png) |
+Pink Glass добавляет стили и редактор через локальное отладочное подключение `127.0.0.1:9337`. Файлы установленного Codex не изменяются. Это не официальный API тем и не продукт OpenAI. Веб-версия ChatGPT, macOS и Linux этой сборкой не поддерживаются.
 
-**[Скачать для Windows — 0.8.11 beta](https://github.com/omenamor/codex-pink-glass/releases/download/v0.8.11-beta/PinkGlass-Setup-0.8.11-beta.zip)**
+Ключи API и внешние сервисы не нужны. Отладочное подключение доступно локальным программам, пока Codex полностью не закрыт. Будущие обновления Codex могут потребовать адаптации оформления. Выпуск остаётся бета-версией: проверка полного запуска на другом компьютере ещё нужна.
 
-## Установка
+## Отключение и удаление
 
-1. Установите официальный Codex для Windows x64.
-2. Скачайте и полностью распакуйте `PinkGlass-Setup-0.8.11-beta.zip` из релиза.
-3. Запустите `Setup.vbs`.
-4. Полностью закройте Codex после завершения задач и откройте ярлык **Pink Glass**.
+Попросите Codex отключить Pink Glass. Также можно полностью закрыть Codex и открыть его обычным ярлыком. Удаление плагина из списка само по себе не останавливает уже запущенный коннектор. После отключения можно удалить плагин и ярлык. Настройки темы сохраняются в профиле Codex.
 
-Node.js включён. На новом профиле применяется сохранённый комплект оформления. Если старая тема уже есть, её настройки сохраняются; импортируйте `theme.json` из папки установки для вида из этой сборки.
+## English
 
-Меню **Тема** позволяет менять цвета и фон, сохранять их и выключать оформление для сравнения. Кнопка скрывается через 6 секунд без наведения.
+Pink Glass is an unofficial Windows x64 appearance plugin for Codex, with five customizable themes: Sakura, Lavender, Moonlight, Peach and Mint. Install the marketplace and plugin with the commands above, start a new Codex task, and ask it to install and enable Pink Glass. If a restart is required, finish your tasks, fully quit Codex, then use the **Codex Pink Glass** desktop shortcut. Node.js is bundled. This release fixes Windows packaged-app path redirection. It does not support the ChatGPT website, macOS or Linux.
 
-## Отключение
+## License
 
-Полностью закройте Codex и откройте обычным ярлыком. Для удаления также удалите `%LOCALAPPDATA%\PinkGlass` и ярлык Pink Glass. Сохранённые настройки темы останутся в профиле Codex.
-
-## Статус беты
-
-Локально проверены установка в новую папку, защита существующей установки, откат после ошибки, оформление в Edge, оба логотипа, автоскрытие и отключение. Проверка на другом компьютере ещё нужна. Будущие обновления Codex могут потребовать адаптации.
-
-Запуск использует локальное отладочное подключение `127.0.0.1:9337`, доступное локальным программам до полного выхода из Codex. Файлы установленного приложения не изменяются. Подробнее — README внутри архива. Не является продуктом OpenAI.
-
+Original Pink Glass code is available under the [MIT License](LICENSE). Bundled Node.js and its dependencies retain their own notices in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). OpenAI, Codex and ChatGPT names and marks belong to their respective owners; this project is not affiliated with or endorsed by OpenAI.

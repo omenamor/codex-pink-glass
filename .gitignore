@@ -1,3 +1,6 @@
 *.log
 .connector-session.json
 runtime/
+!plugins/pink-glass/payload/runtime/
+!plugins/pink-glass/payload/runtime/node.exe
+!plugins/pink-glass/payload/runtime/LICENSE.txt

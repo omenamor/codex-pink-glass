@@ -1,0 +1,19 @@
+name: Plugin checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check launcher paths and shortcut behavior
+        shell: powershell
+        run: ./tests/plugin-launcher.test.ps1
+      - name: Verify package and repeat installation
+        shell: powershell
+        run: |
+          & ./plugins/pink-glass/scripts/PinkGlass.ps1 -Action Install
+          if ($LASTEXITCODE -ne 0) { throw 'Installation failed' }
+          & ./plugins/pink-glass/scripts/PinkGlass.ps1 -Action Install
+          if ($LASTEXITCODE -ne 0) { throw 'Repeat installation failed' }
