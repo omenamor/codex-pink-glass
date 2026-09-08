@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION = '0.10.15';
+  const VERSION = '0.10.16';
   const KEY = '__CODEX_PINK_MOD__';
   const STORE = 'codex-pink-mod:v1';
   const PROFILES = 'codex-pink-mod:profiles:v1';
@@ -153,6 +153,32 @@
     const composerSelector=':is(.composer-surface-chrome,[class*="_ComposerLayoutRoot_"],[data-composer-surface-variant][data-composer-radius-variant])';
     const glassComposer=`${composerSelector}:not(${composerSelector} *)`;
     const overlaySelector=':is(dialog,[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"])';
+    function readabilityCss() {
+      const muted=`color-mix(in srgb,${config.ink} 92%,${config.card})`;
+      const surface=`color-mix(in srgb,${config.card} 92%,transparent)`;
+      const headerButtons='header.fixed :is(button,[role="button"])';
+      return `
+        :root{--color-text-default:${config.ink}!important;--color-text-foreground:${config.ink}!important;--color-token-foreground:${config.ink}!important;--color-text-secondary-solid:${muted}!important;--color-text-foreground-secondary:${muted}!important;--color-text-foreground-tertiary:${muted}!important;--color-token-text-secondary:${muted}!important;--color-token-text-tertiary:${muted}!important;--color-token-description-foreground:${muted}!important;--color-text-button-tertiary:${muted}!important}
+        /* Small action surfaces preserve the transparent header and right-pane tabs. */
+        ${headerButtons}{background-color:${surface}!important;color:${config.ink}!important;border-radius:${config.buttonRadius}px!important;box-shadow:inset 0 0 0 1px ${config.border}99,0 2px 7px #0000000a!important;backdrop-filter:blur(${config.glassBlur}px)!important;text-shadow:none!important}
+        ${headerButtons} :is(span,svg){color:inherit!important}
+        ${headerButtons}:is(:enabled:not([aria-disabled="true"]):hover,[data-state="open"]){background-color:${config.card}!important;box-shadow:inset 0 0 0 1px ${config.accent}88!important}
+        ${headerButtons}:focus-visible{outline:2px solid ${config.accent}!important;outline-offset:2px}
+        ${activeTheme!=='moonlight'?`
+          /* The sidebar paints its own wallpaper, so a backdrop blur alone cannot shield its labels. */
+          aside.app-shell-left-panel{--pink-wallpaper-scrim:color-mix(in srgb,${config.panel} 88%,transparent);--color-text-secondary:${muted}!important;--color-text-tertiary:${muted}!important}
+          ${mainSelector} .thread-scroll-container{background-color:color-mix(in srgb,${config.card} 90%,transparent)!important;border-radius:${config.radius}px!important;color:${config.ink}!important}
+          ${glassComposer}{background-color:${surface}!important}
+          [class*="_ComposerLayoutRoot_"] [data-placeholder]::before,${mainSelector} :is(input,textarea)::placeholder{color:${muted}!important;opacity:1!important}
+          section[class~="group/home-suggestions"] button[aria-labelledby]{background:${surface}!important}
+          .heading-xl:has(> [class~="group/title"]){background-color:${surface}!important;border-radius:${config.buttonRadius}px!important;box-shadow:0 0 0 10px ${surface};color:${config.ink}!important}
+        `:''}
+        @media(prefers-reduced-transparency:reduce){
+          ${headerButtons},${mainSelector} .thread-scroll-container,${glassComposer},section[class~="group/home-suggestions"] button[aria-labelledby]{background-color:${config.card}!important;backdrop-filter:none!important}
+          aside.app-shell-left-panel{--pink-wallpaper-scrim:${config.panel}}
+        }
+      `;
+    }
     function overlayCss() {
       const muted=`color-mix(in srgb,${config.ink} 85%,${config.panel})`;
       const primary=`color-mix(in srgb,${config.accent} 80%,${config.ink})`;
@@ -345,7 +371,7 @@
 
         ${config.wallpaper?`
           ${mainSelector},aside.app-shell-left-panel{
-            background-image:linear-gradient(#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')},#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')}),linear-gradient(${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')},${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')}),${config.wallpaperTint?`linear-gradient(${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')},${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')}),`:''}url("${config.wallpaper}")!important;
+            background-image:linear-gradient(var(--pink-wallpaper-scrim,transparent),var(--pink-wallpaper-scrim,transparent)),linear-gradient(#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')},#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')}),linear-gradient(${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')},${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')}),${config.wallpaperTint?`linear-gradient(${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')},${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')}),`:''}url("${config.wallpaper}")!important;
             background-blend-mode:normal!important;background-size:cover!important;background-position:center center!important;background-attachment:fixed!important;background-repeat:no-repeat!important;
           }
         `:''}
@@ -362,6 +388,7 @@
           ${mainSelector} .thread-scroll-container{color:${config.ink}!important}
         `:''}
         ${overlayCss()}
+        ${readabilityCss()}
       `:'';
     }
     function schedule(){if(!animationFrame)animationFrame=requestAnimationFrame(render);}
