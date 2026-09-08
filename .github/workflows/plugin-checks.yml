@@ -16,7 +16,7 @@ jobs:
         shell: powershell
         run: |
           $env:PLAYWRIGHT_PATH = Join-Path $env:GITHUB_WORKSPACE 'node_modules/playwright/index.mjs'
-          node --test ./tests/dialog-contrast.test.mjs ./tests/readability.test.mjs
+          node --test ./tests/dialog-contrast.test.mjs ./tests/readability.test.mjs ./tests/message-contrast.test.mjs
           if ($LASTEXITCODE -ne 0) { throw 'Dialog contrast checks failed' }
       - name: Verify package and repeat installation
         shell: powershell

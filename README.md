@@ -4,7 +4,7 @@
 
 Неофициальное оформление с эффектом стекла, фонами и редактором цветов. Плагин помогает устанавливать, включать, отключать и настраивать тему прямо из задачи Codex. Windows x64; Node.js включён в комплект.
 
-**[Скачать плагин для Windows](https://github.com/omenamor/codex-pink-glass/releases/download/v0.10.16/PinkGlass-Plugin-0.10.16.zip)** · [Все выпуски](https://github.com/omenamor/codex-pink-glass/releases) · [Сообщить об ошибке](https://github.com/omenamor/codex-pink-glass/issues)
+**[Скачать плагин для Windows](https://github.com/omenamor/codex-pink-glass/releases/download/v0.10.17/PinkGlass-Plugin-0.10.17.zip)** · [Все выпуски](https://github.com/omenamor/codex-pink-glass/releases) · [Сообщить об ошибке](https://github.com/omenamor/codex-pink-glass/issues)
 
 ## Установка из каталога плагинов
 
@@ -54,6 +54,10 @@ codex plugin add pink-glass@pink-glass-community
 - «Отключи Pink Glass».
 
 Настройки профилей сохраняются. Обновление плагина не сбрасывает цвета и не перезаписывает файлы работающего оформления. Если прежняя версия ещё включена, завершите задачи и при следующем обычном запуске используйте обновлённый ярлык.
+
+## Сообщения в 0.10.17
+
+Исправлена прозрачная подложка пользовательских сообщений в ChatGPT: рисунок больше не просвечивает через текст. Общий стиль применяется к сообщениям ChatGPT, локальным задачам Codex и компактным сообщениям во всех пяти темах. Цвета берутся из настроек «Мои сообщения» и «Текст моих сообщений».
 
 ## Читаемость в 0.10.16
 

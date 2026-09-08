@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION = '0.10.16';
+  const VERSION = '0.10.17';
   const KEY = '__CODEX_PINK_MOD__';
   const STORE = 'codex-pink-mod:v1';
   const PROFILES = 'codex-pink-mod:profiles:v1';
@@ -346,7 +346,10 @@
         [class*="_MarkdownRoot_"] :is(a[href],[class*="_InlineMentionFocusRing_"]) :is([class*="_Mention_"],[class*="_Label_"],[class*="_IconContainer_"],svg){color:inherit!important}
         ${mainSelector} :is(a[href],[role="link"]){color:color-mix(in srgb,${config.ink} 75%,${config.accent})!important;text-decoration-color:currentColor!important}
         ${mainSelector} :is(a[href],[role="link"]):hover{color:${config.ink}!important;text-decoration:underline;text-underline-offset:3px}
-        [data-local-conversation-user-anchor] .bg-user-message{background-color:${config.messageBg}!important;color:${config.messageInk}!important}
+        /* ChatGPT bubbles have no local-conversation anchor. Target the shared
+           semantic bubble and native utility, including compact message variants. */
+        :root{--color-background-user-message:${config.messageBg}!important}
+        :is([data-user-message-bubble],[class~="bg-user-message"]){--color-background-user-message:${config.messageBg}!important;--color-text-user-message:${config.messageInk}!important;background-color:${config.messageBg}!important;color:${config.messageInk}!important}
 
         /* This fixed header spans the right pane too; its fill would wash out the tabs below it. */
         [class*="_MainContentSurface_"] > header.fixed{border-top-left-radius:${config.radius}px!important;border-top-right-radius:${config.radius}px!important;background:transparent!important;box-shadow:none!important}
