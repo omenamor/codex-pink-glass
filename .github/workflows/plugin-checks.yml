@@ -10,6 +10,14 @@ jobs:
       - name: Check launcher paths and shortcut behavior
         shell: powershell
         run: ./tests/plugin-launcher.test.ps1
+      - name: Install browser test dependency
+        run: npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+      - name: Check all five dialog palettes in light and dark native schemes
+        shell: powershell
+        run: |
+          $env:PLAYWRIGHT_PATH = Join-Path $env:GITHUB_WORKSPACE 'node_modules/playwright/index.mjs'
+          node --test ./tests/dialog-contrast.test.mjs
+          if ($LASTEXITCODE -ne 0) { throw 'Dialog contrast checks failed' }
       - name: Verify package and repeat installation
         shell: powershell
         run: |

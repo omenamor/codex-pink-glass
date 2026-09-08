@@ -4,3 +4,5 @@ runtime/
 !plugins/pink-glass/payload/runtime/
 !plugins/pink-glass/payload/runtime/node.exe
 !plugins/pink-glass/payload/runtime/LICENSE.txt
+node_modules/
+tests/assets/

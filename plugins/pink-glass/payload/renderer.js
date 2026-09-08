@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION = '0.10.14';
+  const VERSION = '0.10.15';
   const KEY = '__CODEX_PINK_MOD__';
   const STORE = 'codex-pink-mod:v1';
   const PROFILES = 'codex-pink-mod:profiles:v1';
@@ -152,6 +152,67 @@
     const mainSelector='main:is(.main-surface,[data-app-shell-main-surface],[class*="_MainContentSurface_"])';
     const composerSelector=':is(.composer-surface-chrome,[class*="_ComposerLayoutRoot_"],[data-composer-surface-variant][data-composer-radius-variant])';
     const glassComposer=`${composerSelector}:not(${composerSelector} *)`;
+    const overlaySelector=':is(dialog,[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"])';
+    function overlayCss() {
+      const muted=`color-mix(in srgb,${config.ink} 85%,${config.panel})`;
+      const primary=`color-mix(in srgb,${config.accent} 80%,${config.ink})`;
+      const hover=`color-mix(in srgb,${config.accent} 70%,${config.ink})`;
+      // Portals live outside main. Pair their native background/foreground tokens
+      // locally so neither the host's light nor dark scheme can bleed through.
+      return `
+        ${overlaySelector}{
+          --color-background-primary-soft:${config.panel}!important;
+          --color-background-primary-soft-alpha:${config.panel}!important;
+          --color-background-primary-soft-active:${config.card}!important;
+          --color-background-control:${config.panel}!important;
+          --color-background-control-opaque:${config.panel}!important;
+          --color-background-elevated-primary:${config.card}!important;
+          --color-background-elevated-primary-opaque:${config.card}!important;
+          --color-token-input-background:${config.panel}!important;
+          --color-token-input-border:${config.border}!important;
+          --color-token-dropdown-background:${config.panel}!important;
+          --vscode-input-background:${config.panel}!important;
+          --vscode-input-foreground:${config.ink}!important;
+          --vscode-input-placeholderForeground:${muted}!important;
+          --vscode-dropdown-background:${config.panel}!important;
+          --vscode-dropdown-foreground:${config.ink}!important;
+          --color-text-primary:${config.ink}!important;
+          --color-text-default:${config.ink}!important;
+          --color-text-foreground:${config.ink}!important;
+          --color-token-foreground:${config.ink}!important;
+          --color-token-text-primary:${config.ink}!important;
+          --color-text-secondary:${muted}!important;
+          --color-text-tertiary:${muted}!important;
+          --color-text-secondary-solid:${muted}!important;
+          --color-text-foreground-secondary:${muted}!important;
+          --color-text-foreground-tertiary:${muted}!important;
+          --color-token-text-secondary:${muted}!important;
+          --color-token-text-tertiary:${muted}!important;
+          --color-token-description-foreground:${muted}!important;
+          --color-text-disabled:${muted}!important;
+          --color-background-primary-solid:${primary}!important;
+          --color-text-primary-solid:${config.buttonInk}!important;
+          --color-background-button-primary:${primary}!important;
+          --color-background-button-primary-hover:${hover}!important;
+          --color-background-button-primary-active:${hover}!important;
+          --color-background-button-primary-inactive:${config.panel}!important;
+          --color-text-button-primary:${config.buttonInk}!important;
+          --color-background-button-secondary:${config.panel}!important;
+          --color-background-button-secondary-hover:${config.card}!important;
+          --color-text-button-secondary:${config.ink}!important;
+          --color-text-button-tertiary:${muted}!important;
+          color:${config.ink}!important;background-color:${config.card}!important;border-color:${config.border}!important;
+        }
+        ${overlaySelector} :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),textarea,select){color:${config.ink}!important;caret-color:${config.ink}!important}
+        ${overlaySelector} :is(input,textarea)::placeholder{color:${muted}!important;opacity:1!important}
+        ${overlaySelector} :is(input,textarea,select,button):focus-visible{outline:2px solid ${config.accent}!important;outline-offset:2px}
+        ${overlaySelector} button:is([class~="bg-primary-solid"],[class~="bg-button-primary"]){background-color:${primary}!important;color:${config.buttonInk}!important}
+        ${overlaySelector} button:is([class~="bg-primary-solid"],[class~="bg-button-primary"]):enabled:not([aria-disabled="true"]):hover{background-color:${hover}!important}
+        ${overlaySelector} button:is([class~="bg-primary-solid"],[class~="bg-button-primary"]) :is(span,svg){color:inherit!important}
+        ${overlaySelector} button:is(:disabled,[aria-disabled="true"]){color:${muted}!important;opacity:1!important}
+        ${overlaySelector} button:is([class~="bg-primary-solid"],[class~="bg-button-primary"]):is(:disabled,[aria-disabled="true"]){background-color:${config.panel}!important;border-color:${config.border}!important}
+      `;
+    }
     function glassCss() {
       if (!config.glass) return '';
       const alpha = (1 - config.glassTransparency / 100).toFixed(2);
@@ -250,7 +311,7 @@
         :is([data-codex-composer-root],aside.app-shell-left-panel) button{border-radius:${config.buttonRadius}px!important}
         :is(${sendSelector},${stopSelector}) :is(svg,[class~="text-composer-primary"]){color:${config.buttonInk}!important}
         ${sendSelector},${stopSelector}{background-color:${config.accent}!important;color:${config.buttonInk}!important}
-        :is([role="menu"],[role="dialog"]):not(#${ROOT} *){background-color:${config.card}!important;border-color:${config.border}!important;border-radius:${config.radius}px!important}
+        ${overlaySelector}{border-radius:${config.radius}px!important}
 
         ${iconCss(sendSelector,config.sendIcon)}${iconCss(stopSelector,config.stopIcon)}
         ${glassCss()}
@@ -300,6 +361,7 @@
           ${mainSelector} ::placeholder{color:#b9aecb!important;opacity:1}
           ${mainSelector} .thread-scroll-container{color:${config.ink}!important}
         `:''}
+        ${overlayCss()}
       `:'';
     }
     function schedule(){if(!animationFrame)animationFrame=requestAnimationFrame(render);}
