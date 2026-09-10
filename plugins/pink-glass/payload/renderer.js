@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION = '0.10.17';
+  const VERSION = '0.10.28';
   const KEY = '__CODEX_PINK_MOD__';
   const STORE = 'codex-pink-mod:v1';
   const PROFILES = 'codex-pink-mod:profiles:v1';
@@ -152,30 +152,37 @@
     const mainSelector='main:is(.main-surface,[data-app-shell-main-surface],[class*="_MainContentSurface_"])';
     const composerSelector=':is(.composer-surface-chrome,[class*="_ComposerLayoutRoot_"],[data-composer-surface-variant][data-composer-radius-variant])';
     const glassComposer=`${composerSelector}:not(${composerSelector} *)`;
+    const homeComposer=`:is(${glassComposer}[data-composer-utility-bar-variant="home"],${glassComposer}[data-codex-composer-root][data-composer-placement="home"],[data-codex-composer-root][data-composer-placement="home"] ${glassComposer})`;
     const overlaySelector=':is(dialog,[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"])';
     function readabilityCss() {
       const muted=`color-mix(in srgb,${config.ink} 92%,${config.card})`;
       const surface=`color-mix(in srgb,${config.card} 92%,transparent)`;
       const headerButtons='header.fixed :is(button,[role="button"])';
+      const readingText=`${mainSelector} [class*="_MarkdownRoot_"][data-markdown-text-style="assistant-message"]:not([class*="_MarkdownRoot_"] *):not([data-user-message-bubble] *)`;
       return `
         :root{--color-text-default:${config.ink}!important;--color-text-foreground:${config.ink}!important;--color-token-foreground:${config.ink}!important;--color-text-secondary-solid:${muted}!important;--color-text-foreground-secondary:${muted}!important;--color-text-foreground-tertiary:${muted}!important;--color-token-text-secondary:${muted}!important;--color-token-text-tertiary:${muted}!important;--color-token-description-foreground:${muted}!important;--color-text-button-tertiary:${muted}!important}
-        /* Small action surfaces preserve the transparent header and right-pane tabs. */
-        ${headerButtons}{background-color:${surface}!important;color:${config.ink}!important;border-radius:${config.buttonRadius}px!important;box-shadow:inset 0 0 0 1px ${config.border}99,0 2px 7px #0000000a!important;backdrop-filter:blur(${config.glassBlur}px)!important;text-shadow:none!important}
+        /* Wash the wallpaper itself: one quiet toolbar, without pills or a
+           fixed overlay that could cover the right-pane tabs. */
+        ${mainSelector}{--pink-header-wash:linear-gradient(to bottom,${config.panel} 0px,${config.panel}f5 80px,${config.panel}00 128px)}
+        ${headerButtons}{background-color:transparent!important;color:${config.ink}!important;border-color:transparent!important;box-shadow:none!important;backdrop-filter:none!important;text-shadow:none!important}
         ${headerButtons} :is(span,svg){color:inherit!important}
-        ${headerButtons}:is(:enabled:not([aria-disabled="true"]):hover,[data-state="open"]){background-color:${config.card}!important;box-shadow:inset 0 0 0 1px ${config.accent}88!important}
+        ${headerButtons}:is(:enabled:not([aria-disabled="true"]):hover,[data-state="open"]){background-color:color-mix(in srgb,${config.ink} 7%,transparent)!important;box-shadow:none!important}
         ${headerButtons}:focus-visible{outline:2px solid ${config.accent}!important;outline-offset:2px}
         ${activeTheme!=='moonlight'?`
-          /* The sidebar paints its own wallpaper, so a backdrop blur alone cannot shield its labels. */
-          aside.app-shell-left-panel{--pink-wallpaper-scrim:color-mix(in srgb,${config.panel} 88%,transparent);--color-text-secondary:${muted}!important;--color-text-tertiary:${muted}!important}
-          ${mainSelector} .thread-scroll-container{background-color:color-mix(in srgb,${config.card} 90%,transparent)!important;border-radius:${config.radius}px!important;color:${config.ink}!important}
+          /* sidebarDim alone controls the wallpaper veil; 0 must be unfiltered. */
+          aside.app-shell-left-panel{--color-text-secondary:${muted}!important;--color-text-tertiary:${muted}!important}
+          ${mainSelector} .thread-scroll-container{background-color:transparent!important;color:${config.ink}!important}
+          /* Keep the wallpaper visible between messages instead of covering
+             the entire scrolling pane with a near-opaque sheet. */
+          ${readingText}{box-sizing:border-box;padding:8px 12px;background-color:${surface}!important;border-radius:${Math.min(config.radius,12)}px!important;box-shadow:none!important}
           ${glassComposer}{background-color:${surface}!important}
           [class*="_ComposerLayoutRoot_"] [data-placeholder]::before,${mainSelector} :is(input,textarea)::placeholder{color:${muted}!important;opacity:1!important}
           section[class~="group/home-suggestions"] button[aria-labelledby]{background:${surface}!important}
-          .heading-xl:has(> [class~="group/title"]){background-color:${surface}!important;border-radius:${config.buttonRadius}px!important;box-shadow:0 0 0 10px ${surface};color:${config.ink}!important}
         `:''}
         @media(prefers-reduced-transparency:reduce){
-          ${headerButtons},${mainSelector} .thread-scroll-container,${glassComposer},section[class~="group/home-suggestions"] button[aria-labelledby]{background-color:${config.card}!important;backdrop-filter:none!important}
-          aside.app-shell-left-panel{--pink-wallpaper-scrim:${config.panel}}
+          ${mainSelector}{--pink-header-wash:linear-gradient(to bottom,${config.panel} 0px,${config.panel} 80px,${config.panel}00 128px)}
+          ${readingText},${glassComposer},section[class~="group/home-suggestions"] button[aria-labelledby]{background-color:${config.card}!important;backdrop-filter:none!important}
+          ${readingText}{box-shadow:none!important}
         }
       `;
     }
@@ -250,13 +257,14 @@
         [role="group"]:has(> .bg-background-mode-toggle-track) > [class*="_indicator_"]{background:${config.card}!important;border-color:${config.border}!important;box-shadow:0 2px 4px -1px ${config.border}80!important}
         [role="group"]:has(> .bg-background-mode-toggle-track) > button{color:color-mix(in srgb,${config.ink} 75%,${config.panel})!important}
         [role="group"]:has(> .bg-background-mode-toggle-track) > button:is([aria-pressed="true"],:hover,:focus-visible){color:${config.ink}!important}
-        ${mainSelector}{background-image:${glow}!important;border-radius:${config.radius}px!important;box-shadow:inset 0 0 0 1px #ffffffb8}
+        ${mainSelector}{background-image:var(--pink-header-wash,linear-gradient(transparent,transparent)),${glow}!important;border-radius:${config.radius}px 0 0 0!important;border-left:1px solid ${config.border}!important;box-shadow:none!important}
+        [class*="_MainContentClip_"]{border-radius:${config.radius}px 0 0 0!important;background-color:${config.panel}!important}
         [class*="_ApplicationMenuTopBar_"]{background:${config.panel}!important;color:${config.ink}!important;box-shadow:inset 0 -1px ${config.border}66!important}
         [class*="_ApplicationMenuTopBar_"] button:not(:disabled){color:${config.ink}!important}
         [class*="_ApplicationMenuTopBar_"] button:not(:disabled):is(:hover,:focus-visible){background:color-mix(in srgb,${config.accent} 15%,transparent)!important}
-        aside.app-shell-left-panel{background:${config.panel}!important;border-radius:${config.radius}px!important;box-shadow:inset 0 0 0 1px #ffffffc9,0 8px 28px #9b557712!important}
+        aside.app-shell-left-panel{background:${config.panel}!important;border-radius:0!important;box-shadow:none!important}
         header:is(.app-header-tint,[data-app-shell-header-edge-scroll],[class*="_Header_"]){background:color-mix(in srgb,${config.panel} 78%,transparent)!important;border-bottom:1px solid ${config.accent}26!important;box-shadow:none!important}
-        ${glassComposer}{background:${config.card}!important;border:1px solid #ffffffdf!important;box-shadow:inset 0 1px 0 #ffffffed,0 ${config.shadow}px ${config.shadow*4}px #75455d24!important}
+        ${glassComposer}{background:${config.card}!important;border:1px solid ${config.border}!important;box-shadow:inset 0 0 0 1px ${config.border},0 ${config.shadow}px ${config.shadow*4}px #75455d24!important}
         /* Separate ChatGPT's lower rail from the translucent composer; native -4px margin bleeds through. */
         [data-composer-rail][data-composer-rail-placement="below"]:has(> [data-composer-placement="home"][data-composer-rail-variant="controls"]){margin-top:6px!important}
         [data-composer-placement="home"][data-composer-rail-placement="below"][data-composer-rail-variant="controls"]{border-radius:${config.buttonRadius}px!important}
@@ -266,12 +274,12 @@
         [class*="_ComposerLayoutRoot_"] [data-placeholder]::before{color:color-mix(in srgb,${config.ink} 65%,${config.card})!important;opacity:1!important}
         [class*="_ComposerLayoutRoot_"] button[class~="bg-composer-primary"]{background:${config.accent}!important;color:${config.buttonInk}!important}
         [class*="_ComposerLayoutRoot_"] button[class~="bg-composer-primary"] svg{color:${config.buttonInk}!important}
-        [data-codex-composer-root][data-composer-placement="home"] ${glassComposer}{border-color:${config.border}!important;box-shadow:none!important}
-        [data-codex-composer-root][data-composer-placement="home"] ${glassComposer}:focus-within{border-color:${config.accent}88!important}
+        ${homeComposer}{border:1px solid ${config.border}!important;border-radius:${config.radius}px!important;box-shadow:inset 0 0 0 1px ${config.border}!important}
+        ${homeComposer}:focus-within{border-color:${config.accent}88!important;box-shadow:inset 0 0 0 1px ${config.accent}88!important}
         [data-codex-composer-root][data-composer-placement="home"] [data-composer-rail-variant="controls"]{background:color-mix(in srgb,${config.card} 92%,transparent)!important;border:1px solid ${config.border}!important;box-shadow:none!important}
         ${composerSelector} ${composerSelector}{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
         aside.app-shell-left-panel :is([aria-current="page"],[data-state="active"]){background:color-mix(in srgb,${config.accent} 12%,${config.card})!important;color:${config.ink}!important;box-shadow:inset 0 0 0 1px ${config.accent}40!important;border-radius:${config.buttonRadius}px!important}
-        aside.app-shell-left-panel{background-image:none!important;border-right:1px solid #ffffffcc!important}
+        aside.app-shell-left-panel{background-image:none!important;border-right:0!important}
         ${glassComposer}{background-image:linear-gradient(145deg,#ffffff80,transparent 65%)!important}
         ${glassComposer}:focus-within{border-color:${config.accent}88!important;outline:none!important}
         ${mainSelector} .thread-scroll-container{color:color-mix(in srgb,${config.ink} 92%,#281c26)!important}
@@ -316,6 +324,10 @@
       style.textContent=config.enabled?`
         :root{color-scheme:${activeTheme==='moonlight'?'dark':'light'}!important;--color-surface:${config.bg}!important;--color-background-surface:${config.bg}!important;--color-token-main-surface-primary:${config.bg}!important;--color-surface-secondary:${config.panel}!important;--color-background-surface-under:${config.panel}!important;--color-surface-tertiary:${config.card}!important;--color-surface-elevated:${config.card}!important;--color-surface-elevated-secondary:${config.card}!important;--color-text-user-message:${config.messageInk}!important;--color-bg-user-message:${config.messageBg}!important;--color-text-primary:${config.ink}!important;--color-text-secondary:${config.ink}!important;--color-text-tertiary:${config.ink}!important;--color-token-text-primary:${config.ink}!important;--color-token-bg-primary:${config.bg}!important;--color-token-bg-secondary:${config.panel}!important;--color-token-border-default:${config.border}!important;--color-bg-primary:${config.bg}!important;--color-bg-secondary:${config.panel}!important;--color-border:${config.border}!important;--color-accent:${config.accent}!important}
         :root{--color-background-panel:${config.card}!important;--color-background-primary-soft-alpha:${config.card}!important;--color-background-elevated-secondary:${config.card}!important;--color-background-elevated-secondary-opaque:${config.card}!important;--color-codex-editor-inline-code-background:${config.card}!important}
+        /* Native queue rails and change-summary chips share these neutral
+           surface tokens, which otherwise retain the host's previous palette. */
+        :root{--color-background-primary-soft:${config.panel}!important;--color-background-control:${config.card}!important;--color-background-control-opaque:${config.card}!important;--color-background-elevated-primary:${config.card}!important;--color-background-elevated-primary-opaque:${config.card}!important;--color-background-composer-action-bar:${config.panel}!important;--color-border-primary-outline:${config.border}!important}
+        [data-composer-rail-item][data-composer-rail-variant="default"]{background-color:color-mix(in srgb,${config.panel} 96%,transparent)!important;color:${config.ink}!important}
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input){background:color-mix(in srgb,${config.card} 92%,transparent)!important;border-color:${config.border}!important;border-radius:${config.buttonRadius}px!important;color:${config.ink}!important;box-shadow:inset 0 1px 0 #ffffff0d!important}
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input):focus-within{border-color:${config.accent}!important;box-shadow:0 0 0 2px ${config.accent}25!important}
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input) input::placeholder{color:color-mix(in srgb,${config.ink} 70%,${config.card})!important;opacity:1}
@@ -374,16 +386,16 @@
 
         ${config.wallpaper?`
           ${mainSelector},aside.app-shell-left-panel{
-            background-image:linear-gradient(var(--pink-wallpaper-scrim,transparent),var(--pink-wallpaper-scrim,transparent)),linear-gradient(#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')},#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')}),linear-gradient(${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')},${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')}),${config.wallpaperTint?`linear-gradient(${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')},${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')}),`:''}url("${config.wallpaper}")!important;
+            background-image:var(--pink-header-wash,linear-gradient(transparent,transparent)),linear-gradient(var(--pink-wallpaper-scrim,transparent),var(--pink-wallpaper-scrim,transparent)),linear-gradient(#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')},#673c50${Math.round(config.wallpaperDarkness/100*255).toString(16).padStart(2,'0')}),linear-gradient(${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')},${config.bg}${Math.round((1-config.wallpaperOpacity/100)*255).toString(16).padStart(2,'0')}),${config.wallpaperTint?`linear-gradient(${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')},${config.accent}${Math.round(config.wallpaperTintStrength/100*255).toString(16).padStart(2,'0')}),`:''}url("${config.wallpaper}")!important;
             background-blend-mode:normal!important;background-size:cover!important;background-position:center center!important;background-attachment:fixed!important;background-repeat:no-repeat!important;
           }
         `:''}
-        ${config.sidebarDim>0?`aside.app-shell-left-panel{box-shadow:inset 0 0 0 1px #ffffffc9,inset 0 0 0 100vmax ${config.panel}${Math.round(config.sidebarDim/100*255).toString(16).padStart(2,'0')},0 8px 28px #9b557712!important}`:''}
+        ${config.sidebarDim>0?`aside.app-shell-left-panel{box-shadow:inset 0 0 0 100vmax ${config.panel}${Math.round(config.sidebarDim/100*255).toString(16).padStart(2,'0')}!important}`:''}
         ${activeTheme==='moonlight'?`
           :root{--color-text-default:${config.ink}!important;--color-text-muted:#bab0cc!important;--color-text:${config.ink}!important;--color-text-foreground:${config.ink}!important;--color-text-emphasis:${config.ink}!important;--color-token-foreground:${config.ink}!important;--color-token-dropdown-foreground:${config.ink}!important;--color-text-button-secondary:${config.ink}!important;--color-text-execution-output:${config.ink}!important;--color-codex-editor-inline-code-foreground:${config.ink}!important;--color-codex-terminal-foreground:${config.ink}!important;--wb-text-primary:${config.ink}!important;--color-foreground-application-menu:${config.ink}!important;--color-token-text-secondary:#c7bdd8!important;--color-token-text-tertiary:#c7bdd8!important;--color-text-secondary-solid:#c7bdd8!important;--color-text-foreground-secondary:#c7bdd8!important;--color-text-foreground-tertiary:#c7bdd8!important;--color-token-description-foreground:#c7bdd8!important;--color-text-button-tertiary:#c7bdd8!important;--color-text-mode-toggle-inactive:#c7bdd8!important;--color-text-disabled:#c7bdd8!important}
-          ${mainSelector}{box-shadow:inset 0 0 0 1px ${config.border}!important}
-          aside.app-shell-left-panel{box-shadow:inset 0 0 0 1px ${config.border},inset 0 0 0 100vmax ${config.panel}${Math.round(config.sidebarDim/100*255).toString(16).padStart(2,'0')}!important}
-          ${glassComposer}{background:color-mix(in srgb,${config.card} 92%,transparent)!important;border-color:${config.border}!important;box-shadow:inset 0 1px #ffffff12,0 8px 24px #00000030!important;color:${config.ink}!important}
+          ${mainSelector}{box-shadow:none!important}
+          aside.app-shell-left-panel{box-shadow:inset 0 0 0 100vmax ${config.panel}${Math.round(config.sidebarDim/100*255).toString(16).padStart(2,'0')}!important}
+          ${glassComposer}{background:color-mix(in srgb,${config.card} 92%,transparent)!important;border-color:${config.border}!important;box-shadow:inset 0 0 0 1px ${config.border},0 8px 24px #00000030!important;color:${config.ink}!important}
           section[class~="group/home-suggestions"] button[aria-labelledby]{background:color-mix(in srgb,${config.card} 90%,transparent)!important;border-color:${config.border}!important;box-shadow:0 6px 20px #00000025!important}
           section[class~="group/home-suggestions"] button[aria-labelledby]:hover{background:${config.panel}!important;border-color:${config.accent}!important}
           ${mainSelector} :is(input,textarea,[contenteditable="true"]){color:${config.ink}!important}
