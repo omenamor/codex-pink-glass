@@ -45,4 +45,3 @@ try {
   if(-not $resolvedTest.StartsWith($resolvedParent,[StringComparison]::OrdinalIgnoreCase)){throw 'Unsafe test cleanup path'}
   if(Test-Path -LiteralPath $resolvedTest){Remove-Item -LiteralPath $resolvedTest -Recurse -Force}
 }
-

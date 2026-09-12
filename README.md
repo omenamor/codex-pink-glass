@@ -4,7 +4,7 @@
 
 Неофициальное оформление с эффектом стекла, фонами и редактором цветов. Плагин помогает устанавливать, включать, отключать и настраивать тему прямо из задачи Codex. Windows x64; Node.js включён в комплект.
 
-**[Скачать плагин для Windows](https://github.com/omenamor/codex-pink-glass/releases/download/v0.10.28/PinkGlass-Plugin-0.10.28.zip)** · [Все выпуски](https://github.com/omenamor/codex-pink-glass/releases) · [Сообщить об ошибке](https://github.com/omenamor/codex-pink-glass/issues)
+**[Скачать плагин для Windows](https://github.com/omenamor/codex-pink-glass/releases/download/v0.10.33/PinkGlass-Plugin-0.10.33.zip)** · [Все выпуски](https://github.com/omenamor/codex-pink-glass/releases) · [Сообщить об ошибке](https://github.com/omenamor/codex-pink-glass/issues)
 
 ## Установка из каталога плагинов
 
@@ -55,33 +55,59 @@ codex plugin add pink-glass@pink-glass-community
 
 Настройки профилей сохраняются. Обновление плагина не сбрасывает цвета и не перезаписывает файлы работающего оформления. Если прежняя версия ещё включена, завершите задачи и при следующем обычном запуске используйте обновлённый ярлык.
 
-## Что нового в 0.10.28
+## Что нового в 0.10.33
 
-В этот выпуск вошли исправления оформления, проверенные во всех пяти темах:
+Финальный выпуск текущей серии исправлений оформления.
 
-- Ровная тонкая обводка по всему контуру поля ввода, включая главную страницу и фокус ввода.
-- Спокойная верхняя строка с общей подложкой вместо отдельных «капсул» вокруг кнопок.
-- Обои снова видны между сообщениями. Подложки ответов имеют внутренние отступы и не выступают за края.
-- У заголовка «Что создадим…» убраны лишняя заливка и тень.
-- Строки поиска, команд и другие служебные подписи больше не получают фон обычного ответа.
-- Исправлены углы панелей, цвет разделителя, фоны очереди сообщений и плашек изменённых файлов. Зелёные и красные счётчики сохранены.
-- Ползунок «Приглушить фон слева» управляет полным диапазоном: 0% — без дополнительного приглушения, 100% — ровный фон без рисунка. Обои основной области не меняются.
+- Единый тонкий контур поля ввода на главной странице и внутри задачи, без усиленной розовой рамки при фокусе.
+- Исправлен стык поля ввода с плашкой выбора проекта: обводка продолжается по скруглённым углам.
+- Кнопки обновления и скачивания, переключатели, флажки и ползунки согласованы с каждой из пяти палитр.
+- Подписи меню и задач используют тёмный цвет текста в светлых темах и белый в Moonlight. Цвет кнопок больше не перекрашивает навигацию.
+- Сохранены цвета статусов, предупреждений и счётчиков изменений, фоновые рисунки и настройки каждого профиля.
 
-Настройки профилей сохраняются. Актуальные файлы устанавливаемого плагина находятся в [`plugins/pink-glass`](plugins/pink-glass); старые файлы в корне оставлены для предыдущих выпусков.
+Также включены предыдущие исправления читаемости диалогов и сообщений, верхней панели, углов, служебных подписей и полного диапазона приглушения фона слева.
 
-## Пример оформления
+Проверки: 14 автоматических тестов пройдены, включая все пять тем и пользовательские цвета; установщик и 9 контрольных сумм пакета проверены.
 
-Исторические скриншоты Sakura из версии 0.8.11. Текущая версия добавляет ещё четыре темы. Личные названия и переписка скрыты плашками. Питомец устанавливается отдельно и в Pink Glass не входит.
+## Все пять тем — 0.10.33
 
-| До | После |
-| --- | --- |
-| ![До Pink Glass](before-home.png) | ![Sakura](after-home.png) |
+Реальные снимки стартового экрана Codex с Pink Glass 0.10.33. Для приватности названия проектов и задач, профиль и персональные подсказки заменены нейтральными подписями; аватар скрыт. Переписки на снимках нет.
+
+### Sakura
+
+Мягкая розовая палитра и цветущая сакура.
+
+![Sakura — Pink Glass 0.10.33, личные данные скрыты](docs/screenshots/0.10.33/sakura.png)
+
+### Lavender
+
+Лавандовые оттенки и спокойный светлый фон.
+
+![Lavender — Pink Glass 0.10.33, личные данные скрыты](docs/screenshots/0.10.33/lavender.png)
+
+### Moonlight
+
+Ночной фон, луна и белый текст меню.
+
+![Moonlight — Pink Glass 0.10.33, личные данные скрыты](docs/screenshots/0.10.33/moonlight.png)
+
+### Peach
+
+Тёплая персиковая палитра.
+
+![Peach — Pink Glass 0.10.33, личные данные скрыты](docs/screenshots/0.10.33/peach.png)
+
+### Mint
+
+Свежая мятная палитра с зелёными акцентами.
+
+![Mint — Pink Glass 0.10.33, личные данные скрыты](docs/screenshots/0.10.33/mint.png)
 
 ## Как это работает
 
 Pink Glass добавляет стили и редактор через локальное отладочное подключение `127.0.0.1:9337`. Файлы установленного Codex не изменяются. Это не официальный API тем и не продукт OpenAI. Веб-версия ChatGPT, macOS и Linux этой сборкой не поддерживаются.
 
-Ключи API и внешние сервисы не нужны. Отладочное подключение доступно локальным программам, пока Codex полностью не закрыт. Будущие обновления Codex могут потребовать адаптации оформления. Выпуск остаётся бета-версией: проверка полного запуска на другом компьютере ещё нужна.
+Ключи API и внешние сервисы не нужны. Отладочное подключение доступно локальным программам, пока Codex полностью не закрыт. Будущие обновления Codex могут потребовать адаптации оформления.
 
 ## Отключение и удаление
 
@@ -89,7 +115,7 @@ Pink Glass добавляет стили и редактор через лока
 
 ## English
 
-Pink Glass is an unofficial Windows x64 appearance plugin for Codex, with five customizable themes: Sakura, Lavender, Moonlight, Peach and Mint. Install the marketplace and plugin with the commands above, start a new Codex task, and ask it to install and enable Pink Glass. If a restart is required, finish your tasks, fully quit Codex, then use the **Codex Pink Glass** desktop shortcut. Node.js is bundled. Version 0.10.28 includes continuous composer outlines, cleaner header controls, visible wallpaper between messages, corrected sidebar dimming and theme-consistent secondary surfaces. Saved theme settings are preserved. It does not support the ChatGPT website, macOS or Linux.
+Pink Glass is an unofficial Windows x64 appearance plugin for Codex, with five customizable themes: Sakura, Lavender, Moonlight, Peach and Mint. Install the marketplace and plugin with the commands above, start a new Codex task, and ask it to install and enable Pink Glass. If a restart is required, finish your tasks, fully quit Codex, then use the **Codex Pink Glass** desktop shortcut. Node.js is bundled. Version 0.10.33 completes the current visual polish pass: consistent composer outlines and rail corners, theme-aware controls, dark sidebar labels in light themes and white labels in Moonlight. The gallery shows all five themes in Codex with personal labels replaced and the avatar hidden. Saved theme settings are preserved. It does not support the ChatGPT website, macOS or Linux.
 
 ## License
 

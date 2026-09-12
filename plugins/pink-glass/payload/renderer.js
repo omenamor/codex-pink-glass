@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const VERSION = '0.10.28';
+  const VERSION = '0.10.33';
   const KEY = '__CODEX_PINK_MOD__';
   const STORE = 'codex-pink-mod:v1';
   const PROFILES = 'codex-pink-mod:profiles:v1';
@@ -153,6 +153,8 @@
     const composerSelector=':is(.composer-surface-chrome,[class*="_ComposerLayoutRoot_"],[data-composer-surface-variant][data-composer-radius-variant])';
     const glassComposer=`${composerSelector}:not(${composerSelector} *)`;
     const homeComposer=`:is(${glassComposer}[data-composer-utility-bar-variant="home"],${glassComposer}[data-codex-composer-root][data-composer-placement="home"],[data-codex-composer-root][data-composer-placement="home"] ${glassComposer})`;
+    const homeRailItem='[data-composer-placement="home"][data-composer-rail-variant="controls"][data-composer-rail-item="present"]:not([aria-hidden="true"])';
+    const roundedHomeRail=`[data-composer-rail][data-composer-rail-placement="above"][class*="_attached_"]:has(> ${homeRailItem},> [class*="_target_"] > ${homeRailItem})`;
     const overlaySelector=':is(dialog,[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"])';
     function readabilityCss() {
       const muted=`color-mix(in srgb,${config.ink} 92%,${config.card})`;
@@ -184,6 +186,60 @@
           ${readingText},${glassComposer},section[class~="group/home-suggestions"] button[aria-labelledby]{background-color:${config.card}!important;backdrop-filter:none!important}
           ${readingText}{box-shadow:none!important}
         }
+      `;
+    }
+    function controlCss() {
+      const primary=`color-mix(in srgb,${config.accent} 80%,${config.ink})`;
+      const primaryHover=`color-mix(in srgb,${config.accent} 70%,${config.ink})`;
+      const secondaryHover=`color-mix(in srgb,${config.panel} 88%,${config.accent})`;
+      const muted=`color-mix(in srgb,${config.ink} 92%,${config.card})`;
+      const updateButton='button.no-drag[class~="bg-chart-blue"][class~="contain-layout"][class~="contain-style"][aria-label][title]';
+      const switchTrack='[role="switch"] > span[aria-hidden="true"][data-state]';
+      return `
+        :root{
+          --pink-control-primary:${primary};--pink-control-primary-hover:${primaryHover};
+          --color-text:${config.ink}!important;
+          --color-background-primary-solid:${primary}!important;--color-text-primary-solid:${config.buttonInk}!important;
+          --color-background-primary-soft-active:${config.panel}!important;
+          --color-background-primary-ghost-hover:color-mix(in srgb,${config.ink} 10%,transparent)!important;
+          --color-background-primary-ghost-focus:color-mix(in srgb,${config.ink} 12%,transparent)!important;
+          --color-background-secondary-soft:color-mix(in srgb,${config.ink} 8%,transparent)!important;
+          --color-background-secondary-soft-alpha:color-mix(in srgb,${config.ink} 8%,transparent)!important;
+          --color-background-button-primary:${primary}!important;
+          --color-background-button-primary-hover:${primaryHover}!important;
+          --color-background-button-primary-active:${primaryHover}!important;
+          --color-background-button-primary-inactive:color-mix(in srgb,${config.accent} 45%,${config.panel})!important;
+          --color-text-button-primary:${config.buttonInk}!important;
+          --color-background-button-secondary:${config.panel}!important;
+          --color-background-button-secondary-hover:${secondaryHover}!important;
+          --color-background-button-secondary-active:color-mix(in srgb,${config.panel} 75%,${config.accent})!important;
+          --color-background-button-secondary-inactive:color-mix(in srgb,${config.card} 70%,${config.panel})!important;
+          --color-text-button-secondary:${config.ink}!important;
+          --color-background-button-tertiary:transparent!important;
+          --color-background-button-tertiary-hover:color-mix(in srgb,${config.ink} 10%,transparent)!important;
+          --color-background-button-tertiary-active:color-mix(in srgb,${config.ink} 15%,transparent)!important;
+          --color-text-button-tertiary:${muted}!important;
+          --color-background-mode-toggle-track:${config.panel}!important;
+          --color-background-mode-toggle-selected:${config.card}!important;
+          --color-border-mode-toggle-selected:${config.border}!important;
+          --color-background-segmented-selected:${config.card}!important;
+          --color-background-segmented-selected-hover:${secondaryHover}!important;
+          --color-ring:${config.accent}!important;
+          --vscode-button-background:${primary}!important;--vscode-button-foreground:${config.buttonInk}!important;
+          --vscode-button-hoverBackground:${primaryHover}!important;--vscode-button-border:${config.border}!important;
+          --vscode-button-secondaryBackground:${config.panel}!important;--vscode-button-secondaryForeground:${config.ink}!important;
+          --vscode-button-secondaryHoverBackground:${secondaryHover}!important;
+          --vscode-checkbox-background:${config.card}!important;--vscode-checkbox-border:${config.border}!important;--vscode-checkbox-foreground:${config.ink}!important;
+          --vscode-inputOption-activeBackground:${config.panel}!important;--vscode-inputOption-activeForeground:${config.ink}!important;--vscode-inputOption-activeBorder:${config.accent}!important;
+        }
+        /* Chart-blue is reused by native update controls and switches. Override
+           it only on those controls, never in actual charts or status colors. */
+        ${updateButton}{--color-chart-blue:${primary}!important;color:${config.buttonInk}!important}
+        ${updateButton}:active:not(:disabled):not([aria-disabled="true"]){background-color:${primaryHover}!important}
+        ${updateButton} :is(span,svg){color:inherit!important}
+        ${switchTrack}[class~="bg-chart-blue"]{--color-chart-blue:${config.accent}!important}
+        [role="checkbox"]{--color-chart-blue:${config.accent}!important}
+        input:is([type="range"],[type="checkbox"],[type="radio"]){accent-color:${config.accent}!important}
       `;
     }
     function overlayCss() {
@@ -274,9 +330,15 @@
         [class*="_ComposerLayoutRoot_"] [data-placeholder]::before{color:color-mix(in srgb,${config.ink} 65%,${config.card})!important;opacity:1!important}
         [class*="_ComposerLayoutRoot_"] button[class~="bg-composer-primary"]{background:${config.accent}!important;color:${config.buttonInk}!important}
         [class*="_ComposerLayoutRoot_"] button[class~="bg-composer-primary"] svg{color:${config.buttonInk}!important}
-        ${homeComposer}{border:1px solid ${config.border}!important;border-radius:${config.radius}px!important;box-shadow:inset 0 0 0 1px ${config.border}!important}
-        ${homeComposer}:focus-within{border-color:${config.accent}88!important;box-shadow:inset 0 0 0 1px ${config.accent}88!important}
+        ${homeComposer}{border:0!important;border-radius:${config.radius}px!important;box-shadow:inset 0 0 0 1px ${config.border},${activeTheme==='moonlight'?'0 8px 24px #00000030':`0 ${config.shadow}px ${config.shadow*4}px #75455d24`}!important}
         [data-codex-composer-root][data-composer-placement="home"] [data-composer-rail-variant="controls"]{background:color-mix(in srgb,${config.card} 92%,transparent)!important;border:1px solid ${config.border}!important;box-shadow:none!important}
+        /* The native attached rail clips a square controls item. Keep its
+           transparent border spacing, but draw the visible curve on the
+           parent's existing corner-shaped overlay instead. */
+        ${roundedHomeRail}{border-color:${config.border}!important}
+        ${roundedHomeRail} ${homeRailItem}{border-color:transparent!important;box-shadow:none!important}
+        ${roundedHomeRail}::after{opacity:1!important;border-color:${config.border}!important}
+
         ${composerSelector} ${composerSelector}{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
         aside.app-shell-left-panel :is([aria-current="page"],[data-state="active"]){background:color-mix(in srgb,${config.accent} 12%,${config.card})!important;color:${config.ink}!important;box-shadow:inset 0 0 0 1px ${config.accent}40!important;border-radius:${config.buttonRadius}px!important}
         aside.app-shell-left-panel{background-image:none!important;border-right:0!important}
@@ -332,9 +394,9 @@
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input):focus-within{border-color:${config.accent}!important;box-shadow:0 0 0 2px ${config.accent}25!important}
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input) input::placeholder{color:color-mix(in srgb,${config.ink} 70%,${config.card})!important;opacity:1}
         ${mainSelector} [class~="bg-background-primary-soft/90"]:has(> input) svg{color:color-mix(in srgb,${config.ink} 75%,${config.card})!important}
-        ${mainSelector} button[class~="bg-primary-solid"]{background-color:${config.accent}!important;color:${config.buttonInk}!important;border-color:${config.accent}!important}
+        ${mainSelector} button[class~="bg-primary-solid"]{background-color:var(--pink-control-primary)!important;color:${config.buttonInk}!important;border-color:${config.accent}!important}
         ${mainSelector} button[class~="bg-primary-solid"] :is(span,svg){color:inherit!important}
-        ${mainSelector} button[class~="bg-primary-solid"]:is(:enabled:hover,[data-state="open"]){background-color:color-mix(in srgb,${config.accent} 85%,${config.ink})!important}
+        ${mainSelector} button[class~="bg-primary-solid"]:is(:enabled:not([aria-disabled="true"]):hover,[data-state="open"]){background-color:var(--pink-control-primary-hover)!important}
         :root{--color-background-composer-primary:${config.accent}!important;--color-text-composer-primary:${config.buttonInk}!important}
         [data-codex-composer-root] [class~="text-composer-primary"]{color:${config.buttonInk}!important}
         [data-codex-composer-root] button[class~="bg-composer-primary"]{background-color:${config.accent}!important;color:${config.buttonInk}!important}
@@ -404,6 +466,23 @@
         `:''}
         ${overlayCss()}
         ${readabilityCss()}
+        ${controlCss()}
+        /* Native navigation derives this local token from primary-button fill.
+           Keep nested labels on theme ink without recoloring badges or controls. */
+        aside.app-shell-left-panel nav[class*="_Navigation_"]{--color-text:${activeTheme==='moonlight'?'#ffffff':config.ink}!important}
+        ${activeTheme==='moonlight'?`
+          aside.app-shell-left-panel{
+            --color-text:#ffffff!important;--color-text-default:#ffffff!important;
+            --color-text-primary:#ffffff!important;--color-text-secondary:#ffffff!important;--color-text-tertiary:#ffffff!important;--color-text-muted:#ffffff!important;
+            --color-text-foreground:#ffffff!important;--color-text-secondary-solid:#ffffff!important;--color-text-foreground-secondary:#ffffff!important;--color-text-foreground-tertiary:#ffffff!important;
+            --color-token-foreground:#ffffff!important;--color-token-text-primary:#ffffff!important;--color-token-text-secondary:#ffffff!important;--color-token-text-tertiary:#ffffff!important;--color-token-description-foreground:#ffffff!important;
+            --color-text-button-secondary:#ffffff!important;--color-text-button-tertiary:#ffffff!important;
+            --vscode-sideBar-foreground:#ffffff!important;--vscode-sideBarTitle-foreground:#ffffff!important;--vscode-list-activeSelectionForeground:#ffffff!important;--vscode-list-inactiveSelectionForeground:#ffffff!important;
+            color:#ffffff!important;
+          }
+          aside.app-shell-left-panel :is(button,a,.sidebar-item,[aria-current="page"],[data-state="active"]){color:#ffffff!important}
+        `:''}
+
       `:'';
     }
     function schedule(){if(!animationFrame)animationFrame=requestAnimationFrame(render);}
