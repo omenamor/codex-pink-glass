@@ -7,6 +7,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Parse installer PowerShell sources
+        shell: powershell
+        run: |
+          foreach ($scriptFile in Get-ChildItem -LiteralPath ./installer -Filter '*.ps1' -File) {
+            $tokens = $null
+            $parseErrors = $null
+            [Management.Automation.Language.Parser]::ParseFile($scriptFile.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
+            if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
+          }
       - name: Check launcher paths and shortcut behavior
         shell: powershell
         run: ./tests/plugin-launcher.test.ps1

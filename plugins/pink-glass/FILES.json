@@ -2,10 +2,10 @@
   "payload/Codex Pink.vbs": "ae448a8837e6e80f8ebfc5ef5563d8c181b80d831096455d6ba3cb13ccd0bc54",
   "payload/connector.mjs": "a65c7bbed25de388a78eba3b1a3f7272fca02d93c4a925606fd6f5109b6c0326",
   "payload/Remove Pink.vbs": "3505e4b750c10cda48b7386c65176e793f635452fe87b3f99e76a9b6b9a662b3",
-  "payload/renderer.js": "7b9ace3e815a046157b6c3b219d88e9a10e99d73ac2d85c58db54a1940418e62",
+  "payload/renderer.js": "af95beb2f51bd19e3692b264cef0bb4316b698959bc08b809ab4c4727f3f639a",
   "payload/runtime/LICENSE.txt": "148eacf7863ef4329224a29398623077200a27194aa075569faf4a0a85566ca5",
   "payload/runtime/node.exe": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
-  "payload/Start-CodexPink.ps1": "58e7e8cd1c0ab3891692ae261b34b4345f0d8cdb914d894152450844452402b5",
-  "scripts/control.mjs": "2785aa907ce845b5ed8b5a80df560a1835745ad4568c61bedc1436e7f8cd0e66",
-  "scripts/PinkGlass.ps1": "704271d86bc1939a83343104c0f3565d39b24b7c4d5dec2421be835135fa0a57"
+  "payload/Start-CodexPink.ps1": "9dac2193ed86a92a6723fff541f6e5653ea1f9850d5f430de0d857a318fa263a",
+  "scripts/control.mjs": "903f8121efccccd8415bf6e35d1e8bd023a2830199a28bfee817c273b3c8bc89",
+  "scripts/PinkGlass.ps1": "e4acd76c84d810ffaa6f3b006ed367ee5e14aea3d31f6cb8b9e0cadf81a436dc"
 }

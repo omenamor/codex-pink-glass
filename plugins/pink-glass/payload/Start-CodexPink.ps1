@@ -16,7 +16,7 @@ try {
   $modProcesses = @(Get-CimInstance Win32_Process -Filter "Name='ChatGPT.exe'" | Where-Object { $_.ExecutablePath -eq $modExe })
   $modListeners = @(Get-NetTCPConnection -LocalPort $modPort -State Listen -ErrorAction SilentlyContinue)
   if ($modProcesses.Count -gt 0 -and $modListeners.Count -eq 0) {
-    Show-ModMessage 'Codex is already open without Pink Mod. Finish active tasks, fully close Codex, then open this launcher again. Nothing was restarted or changed.'
+    Show-ModMessage 'Codex is already open without custom themes. Finish active tasks, fully close Codex, then open this launcher again. Nothing was restarted or changed.'
     exit 2
   }
   if ($modProcesses.Count -eq 0 -and $modListeners.Count -eq 0 -and -not $Remove) {
@@ -46,7 +46,7 @@ try {
     foreach ($modProcess in $modRunning) { Stop-Process -Id $modProcess.ProcessId }
     & $modNode $modConnector --port $modPort --browser-id $modBrowserId --remove
     if ($LASTEXITCODE -ne 0) { throw 'Removal was incomplete. Fully close Codex and open it normally.' }
-    Show-ModMessage 'Pink Mod removed from current windows. Close Codex and launch it normally to also close the local debugging connection.'
+    Show-ModMessage 'Custom themes removed from current windows. Close Codex and launch it normally to also close the local debugging connection.'
   } elseif ($modRunning.Count -eq 0) {
     # Recover registrations left behind by a stopped connector in this browser.
     if (Test-Path -LiteralPath (Join-Path $modRoot '.connector-session.json')) {

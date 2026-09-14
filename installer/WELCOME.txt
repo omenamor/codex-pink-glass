@@ -1,0 +1,9 @@
+Codex Custom Themes for Windows is installed.
+
+Open the desktop or Start Menu shortcut to start Codex with your themes. If Codex is already open, finish your work and close it normally first. Setup does not restart Codex or apply the theme automatically.
+
+Click the Theme button in Codex to choose Sakura, Lavender, Moonlight, Peach or Mint. The menu also controls colors, glass, transparency, wallpaper, image imports, sizes, and shadows. Existing Pink Glass theme profiles remain available.
+
+Updates install beside earlier versions so an open Codex session keeps working. To uninstall, close Codex normally and use Windows Settings > Apps. Saved theme preferences and imported images in your Codex profile are preserved.
+
+This is a community appearance tool for the official Codex Windows app, created by omenamor. It is not an OpenAI product and does not modify Codex application files.

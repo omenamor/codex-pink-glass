@@ -21,6 +21,6 @@
   "stopIcon": "",
   "iconSize": 26,
   "sidebarTransparency": 72,
-  "glassTransparency": 38,
+  "glassTransparency": 8,
   "glassBlur": 10
 }

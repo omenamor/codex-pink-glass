@@ -1,7 +1,7 @@
 {
   "name": "pink-glass",
-  "version": "0.10.33",
-  "description": "Five customizable glass themes for Codex on Windows, with a local theme launcher.",
+  "version": "0.11.0",
+  "description": "Customize Codex on Windows with five themes, live color and glass controls, and your own backgrounds and icons.",
   "author": {
     "name": "omenamor",
     "url": "https://github.com/omenamor"
@@ -10,8 +10,8 @@
   "repository": "https://github.com/omenamor/codex-pink-glass",
   "skills": "./skills/",
   "interface": {
-    "displayName": "Pink Glass",
-    "shortDescription": "Пять тем оформления Codex для Windows",
+    "displayName": "Codex Custom Themes for Windows",
+    "shortDescription": "Темы, цвета и свои фоны для Codex на Windows",
     "longDescription": "Sakura, Lavender, Moonlight, Peach и Mint. Плагин устанавливает локальный мод и помогает включать, отключать и настраивать темы. Первый запуск может потребовать обычного перезапуска Codex через отдельный ярлык. Неофициальное оформление.",
     "developerName": "omenamor",
     "category": "Productivity",
@@ -19,9 +19,9 @@
     "brandColor": "#bc6484",
     "logo": "./assets/logo.svg",
     "defaultPrompt": [
-      "Установи и включи Pink Glass",
+      "Установи и включи Codex Custom Themes for Windows",
       "Включи ночную тему Moonlight",
-      "Открой настройки Pink Glass"
+      "Открой меню настройки темы"
     ]
   },
   "license": "MIT"

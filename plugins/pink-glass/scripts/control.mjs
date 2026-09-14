@@ -11,8 +11,8 @@ try {
   const {sessionId} = await c.send('Target.attachToTarget',{targetId:target.targetId,flatten:true});
   const expression = `(() => {
     const mod=window.__CODEX_PINK_MOD__, root=document.getElementById('codex-pink-mod')?.shadowRoot;
-    if (${JSON.stringify(action)} === 'status') return {active:!!root,version:mod?.version,theme:root?.querySelector('.theme-select')?.value};
-    if (!root) throw Error('Pink Glass is not enabled. Run Enable first.');
+    if (${JSON.stringify(action)} === 'status') return {active:!!root,enabled:mod?.getStats?.().enabled??false,version:mod?.version,theme:root?.querySelector('.theme-select')?.value};
+    if (!root) throw Error('Codex Custom Themes for Windows is not enabled. Run Enable first.');
     if (${JSON.stringify(action)} === 'editor') { if(root.querySelector('.panel').hidden)root.querySelector('.toggle').click(); return {editorOpen:true}; }
     const select=root.querySelector('.theme-select'); select.value=${JSON.stringify(theme || '')}; select.dispatchEvent(new Event('change',{bubbles:true}));
     root.querySelector('[data-action="save"]').click();

@@ -47,10 +47,10 @@ function Set-PhysicalRuntime {
 }
 function Write-Launcher([string]$DesktopPath=[Environment]::GetFolderPath('Desktop')) {
   $launcher=Join-Path $installedPayload 'Codex Pink.vbs'
-  Write-Output "Pink Glass launcher: $launcher"
+  Write-Output "Codex Custom Themes for Windows launcher: $launcher"
   $desktop=$DesktopPath
   if(-not $desktop){Write-Warning 'Desktop is unavailable; use the launcher path above.';return}
-  $shortcutPath=Join-Path $desktop 'Codex Pink Glass.lnk'
+  $shortcutPath=Join-Path $desktop 'Codex Custom Themes for Windows.lnk'
   $shell=New-Object -ComObject WScript.Shell
   $shortcut=$shell.CreateShortcut($shortcutPath)
   # Do not overwrite an unrelated shortcut that happens to have the same name.
@@ -62,9 +62,17 @@ function Write-Launcher([string]$DesktopPath=[Environment]::GetFolderPath('Deskt
   $shortcut.TargetPath=Join-Path $env:WINDIR 'System32\wscript.exe'
   $shortcut.Arguments='"'+$launcher+'"'
   $shortcut.WorkingDirectory=$installedPayload
-  $shortcut.Description='Launch Codex with Pink Glass'
+  $shortcut.Description='Launch Codex Custom Themes for Windows'
   $shortcut.Save()
-  Write-Output "Pink Glass shortcut: $(Resolve-PhysicalFile $shortcutPath)"
+  # Migrate only the legacy shortcut created by this plugin.
+  $legacyPath=Join-Path $desktop 'Codex Pink Glass.lnk'
+  if(Test-Path -LiteralPath $legacyPath){
+    $legacy=$shell.CreateShortcut($legacyPath)
+    if($legacy.TargetPath -like '*\wscript.exe' -and $legacy.Arguments -like '*\PinkGlassPlugin\*\payload\Codex Pink.vbs"'){
+      Remove-Item -LiteralPath $legacyPath -Force
+    }
+  }
+  Write-Output "Codex Custom Themes for Windows shortcut: $(Resolve-PhysicalFile $shortcutPath)"
 }
 function Install-PinkGlass {
   $hashes=Get-Content -LiteralPath (Join-Path $pluginRoot 'FILES.json') -Raw | ConvertFrom-Json
@@ -107,7 +115,7 @@ function Get-CodexIdentity {
 if($Action -eq 'Install'){Install-PinkGlass; Write-Output "Installed runtime: $installRoot"; Write-Launcher; exit 0}
 $identity=Get-CodexIdentity
 if($Action -eq 'Status'){
-  if(-not $identity){Write-Output '{"connected":false,"reason":"Start Codex through the Pink Glass launcher after closing it normally."}';exit 0}
+  if(-not $identity){Write-Output '{"connected":false,"reason":"Start Codex through the Codex Custom Themes for Windows launcher after closing it normally."}';exit 0}
   & (Join-Path $pluginRoot 'payload\runtime\node.exe') (Join-Path $PSScriptRoot 'control.mjs') status $identity
   exit $LASTEXITCODE
 }
@@ -116,7 +124,7 @@ if($Action -eq 'Enable'){
   Write-Launcher
   # Never stack a plugin connector over a mod running from another installation.
   $foreign=@(Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object {$_.CommandLine -like '*connector.mjs*' -and $_.CommandLine -notlike "*$installedPayload\connector.mjs*"})
-  if($foreign.Count){throw 'Another Pink Glass connector is running. Disable it with its original launcher before enabling this plugin.'}
+  if($foreign.Count){throw 'Another custom-theme connector is running. Disable it with its original launcher before enabling this plugin.'}
   & (Join-Path $installedPayload 'Start-CodexPink.ps1')
   if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
   $enabled=$false
@@ -130,7 +138,7 @@ if($Action -eq 'Enable'){
   }
   if(-not $enabled){throw "Connector did not confirm version $pluginVersion. Inspect $installedPayload\connector-error.log"}
   Write-Output $result
-  Write-Output "Pink Glass launcher: $installedPayload\Codex Pink.vbs"
+  Write-Output "Codex Custom Themes for Windows launcher: $installedPayload\Codex Pink.vbs"
   exit 0
 }
 if(-not $identity){throw 'Codex is open without a local connection. Finish tasks, close Codex normally and use Enable.'}

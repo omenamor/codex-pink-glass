@@ -9,7 +9,7 @@ import {pathToFileURL,fileURLToPath} from 'node:url';
 const html=`<!doctype html><html data-pink-mod-test><meta charset="utf-8"><style>
 @layer native{._Navigation_fixture_2{--color-text:var(--color-background-primary-solid)}
 @supports (color:color-mix(in lab,red,red)){._Navigation_fixture_2{--color-text:color-mix(in oklab,var(--color-background-primary-solid) 85%,transparent)}}
-.text-default{color:var(--color-text)}.text-secondary{color:var(--color-text-secondary)}.text-tertiary{color:var(--color-text-tertiary)}
+.text-default{color:var(--color-text)}.text-codex-description{color:var(--color-codex-description)}:root{--vscode-descriptionForeground:rgba(80,61,75,.621);--color-codex-description:var(--vscode-descriptionForeground)}.text-secondary{color:var(--color-text-secondary)}.text-tertiary{color:var(--color-text-tertiary)}
 .sidebar-item:hover{background:var(--color-background-primary-ghost-hover)}.sidebar-item[aria-current=page]{background:var(--color-background-primary-ghost-hover)}
 .danger{color:#e02e2a}.success{color:#00a240}.warning{color:#e25507}.discovery{color:#a100f8}
 }
@@ -19,7 +19,7 @@ const html=`<!doctype html><html data-pink-mod-test><meta charset="utf-8"><style
 <button id="new" class="sidebar-item"><div class="text-default"><span class="row"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 13L13 2M2 6v7h7" fill="none" stroke="currentColor"/></svg><span class="label">Новый чат</span></span></div></button>
 <button class="sidebar-item"><div class="text-default"><span class="label">Пулл-реквесты</span></div></button>
 <button class="sidebar-item"><div class="text-default"><span class="label">Запланировано</span></div></button>
-<div class="section text-secondary">Проекты</div>
+<div class="section text-secondary">Проекты</div><div class="sidebar-item"><span id="inactive-folder" class="text-codex-description">Неактивный проект</span></div>
 <div role="button" class="sidebar-item"><div class="text-default"><span class="label">Дизайн приложения</span></div></div>
 <div role="button" id="selected" aria-current="page" class="sidebar-item nested"><div class="text-default"><span><span class="label">Настроить оформление</span></span></div></div>
 <a id="task" href="#preview" class="sidebar-item nested"><span class="text-default"><span class="label">Проверить цвета</span></span></a>
@@ -37,10 +37,10 @@ test('navigation labels use theme ink in all themes; Moonlight stays white and a
   const page=await browser.newPage({viewport:{width:760,height:600}});await page.goto(`http://127.0.0.1:${server.address().port}`);
   const saved=JSON.stringify({version:1,active:theme,themes:custom?{[theme]:{ink:theme==='moonlight'?'#f0e0ed':'#263e47',accent:'#b64f7e'}}:{}});
   await page.evaluate(saved=>localStorage.setItem('codex-pink-mod:profiles:v1',saved),saved);await page.evaluate(source);
-  const sample=()=>page.evaluate(()=>{const rgba=color=>{const c=document.createElement('canvas');c.width=c.height=1;const x=c.getContext('2d');x.fillStyle=color;x.fillRect(0,0,1,1);return [...x.getImageData(0,0,1,1).data]};const style=e=>getComputedStyle(e);const editor=style(document.getElementById('codex-pink-mod'));return{ink:rgba(editor.getPropertyValue('--editor-ink')),labels:[...document.querySelectorAll('.label')].map(e=>rgba(style(e).color)),icon:rgba(style(document.querySelector('#new svg')).color),outside:rgba(style(document.querySelector('#outside')).color),sections:[...document.querySelectorAll('.section')].map(e=>rgba(style(e).color)),statuses:[...document.querySelector('.status').children].map(e=>rgba(style(e).color)),buttonInk:rgba(style(document.querySelector('.update span')).color),disabled:style(document.querySelector('.disabled')).opacity}});
+  const sample=()=>page.evaluate(()=>{const rgba=color=>{const c=document.createElement('canvas');c.width=c.height=1;const x=c.getContext('2d');x.fillStyle=color;x.fillRect(0,0,1,1);return [...x.getImageData(0,0,1,1).data]};const style=e=>getComputedStyle(e);const editor=style(document.getElementById('codex-pink-mod'));return{ink:rgba(editor.getPropertyValue('--editor-ink')),labels:[...document.querySelectorAll('.label')].map(e=>rgba(style(e).color)),icon:rgba(style(document.querySelector('#new svg')).color),description:rgba(style(document.querySelector('#inactive-folder')).color),outside:rgba(style(document.querySelector('#outside')).color),sections:[...document.querySelectorAll('.section')].map(e=>rgba(style(e).color)),statuses:[...document.querySelector('.status').children].map(e=>rgba(style(e).color)),buttonInk:rgba(style(document.querySelector('.update span')).color),disabled:style(document.querySelector('.disabled')).opacity}});
   const base=await sample(),expected=theme==='moonlight'?[255,255,255,255]:base.ink;
   for(const color of base.labels)assert.deepEqual(color,expected,`${theme}/${custom?'custom':'preset'}: nested label must use ink, not button accent`);
-  assert.deepEqual(base.icon,expected);assert.deepEqual(base.outside,base.ink,'Sidebar rule must not recolor main text');assert.equal(base.disabled,'0.4');
+  assert.deepEqual(base.icon,expected);if(theme==='moonlight')assert.deepEqual(base.description,expected,'Inactive labels must stay white');else{assert.equal(base.description[3],255,'Inactive labels use opaque theme text');assert.notDeepEqual(base.description,[80,61,75,158],'Native description must not retain stale Sakura color')}assert.deepEqual(base.outside,base.ink,'Sidebar rule must not recolor main text');assert.equal(base.disabled,'0.4');
   assert.deepEqual(base.statuses,[[0,162,64,255],[224,46,42,255],[226,85,7,255],[161,0,248,255]]);
   assert.deepEqual(base.buttonInk,theme==='moonlight'?[33,27,50,255]:[255,255,255,255]);
   if(theme==='moonlight')for(const color of base.sections)assert.deepEqual(color,expected,'Moonlight section headings remain white');

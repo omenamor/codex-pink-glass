@@ -23,7 +23,7 @@ try {
   Write-Launcher -DesktopPath $desktop | Out-Null
   Write-Launcher -DesktopPath $desktop | Out-Null
   $shell=New-Object -ComObject WScript.Shell
-  $shortcutPath=Join-Path $desktop 'Codex Pink Glass.lnk'
+  $shortcutPath=Join-Path $desktop 'Codex Custom Themes for Windows.lnk'
   $shortcut=$shell.CreateShortcut($shortcutPath)
   if($shortcut.Arguments -cne ('"'+$physical+'"')){throw 'Shortcut lost physical path or quoting'}
   if($shortcut.WorkingDirectory -ne $installedPayload){throw 'Shortcut working directory differs'}
